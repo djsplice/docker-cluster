@@ -1,0 +1,21 @@
+{
+  "id": "node-1-ubuntu-1404",
+  "chef_environment": "_default",
+  "automatic": {
+    "ipaddress": "192.168.12.12",
+    "platform": "ubuntu",
+    "fqdn": "node-1-ubuntu-1404.vagrantup.com",
+    "recipes": [
+      "docker-cluster::leader",
+      "hurry-up-and-test::set_non_nat_vbox_ip",
+      "hurry-up-and-test::export_node"
+    ]
+  },
+  "normal": {
+  },
+  "run_list": [
+    "recipe[docker-cluster::leader]",
+    "recipe[hurry-up-and-test::set_non_nat_vbox_ip]",
+    "recipe[hurry-up-and-test::export_node]"
+  ]
+}

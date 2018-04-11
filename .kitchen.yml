@@ -5,13 +5,14 @@ driver:
   cpus: 1
 
 provisioner:
-  name: chef_zero
+  name: nodes
   # You may wish to disable always updating cookbooks in CI or other testing environments.
   # For example:
   #   always_update_cookbooks: <%= !ENV['CI'] %>
   always_update_cookbooks: true
-  product_name: chef 
+  product_name: chef
   product_version: 12
+  log_level: info
 
 verifier:
   name: inspec
@@ -20,22 +21,25 @@ platforms:
   - name: ubuntu-14.04
 
 suites:
-  - name: node-1 
+  - name: node-1
     driver:
       network:
       - ['private_network', {ip: '192.168.12.12'}]
     run_list:
-      - recipe[docker-cluster::default]
+      - recipe[docker-cluster::leader]
+      - recipe[hurry-up-and-test::set_non_nat_vbox_ip]
+      - recipe[hurry-up-and-test::export_node]
     verifier:
       inspec_tests:
         - test/smoke/default
     attributes:
-  - name: node-2 
+  - name: node-2
     driver:
       network:
       - ['private_network', {ip: '192.168.12.13'}]
     run_list:
-      - recipe[docker-cluster::default]
+      - recipe[docker-cluster::follower]
+      - recipe[hurry-up-and-test::export_node]
     verifier:
       inspec_tests:
         - test/smoke/default
@@ -45,7 +49,8 @@ suites:
       network:
       - ['private_network', {ip: '192.168.12.14'}]
     run_list:
-      - recipe[docker-cluster::default]
+      - recipe[docker-cluster::follower]
+      - recipe[hurry-up-and-test::export_node]
     verifier:
       inspec_tests:
         - test/smoke/default
